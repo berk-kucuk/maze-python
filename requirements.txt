@@ -1,0 +1,36 @@
+# maze-python — the ONE Python environment every Maze desktop app runs in
+# (/opt/maze/venv). This is the union of what the apps need; the app that
+# needs each line is named so a dependency can be dropped when its app goes.
+#
+# Resolved together on 2026-09-16: 78 distributions, no conflicts.
+
+# ── Qt (maze-guard, maze-cloak, haze, hazedrop, qlam, sentinai) ─────────────
+PyQt6>=6.6.0
+qasync>=0.27.0            # maze-guard, hazedrop
+qtawesome                 # qlam
+
+# ── network / crypto (maze-guard, haze, hazedrop) ────────────────────────────
+scapy>=2.5.0              # maze-guard
+httpx>=0.27.0             # maze-guard
+cryptography>=42.0.0      # maze-guard, haze, hazedrop
+stem>=1.8.2               # haze, hazedrop
+python-socks[asyncio]>=2.4.4   # haze, hazedrop
+aiohttp>=3.9              # haze, hazedrop
+argon2-cffi>=23           # hazedrop
+
+# ── media / misc (haze, hazedrop, qlam) ──────────────────────────────────────
+qrcode[pil]>=7.4          # haze, hazedrop
+sounddevice>=0.4.6        # haze (voice notes; needs the portaudio library)
+numpy>=1.26               # haze
+click>=8.1                # hazedrop
+rich>=13                  # hazedrop
+pyclamd                   # qlam
+watchdog                  # qlam
+
+# ── sentinai ─────────────────────────────────────────────────────────────────
+google-genai
+python-dotenv
+beautifulsoup4
+googlesearch-python
+selenium
+social-analyzer
