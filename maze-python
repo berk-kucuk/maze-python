@@ -1,5 +1,7 @@
 #!/bin/sh
 # maze-python — run the shared Maze Python environment (/opt/maze/venv).
-#   maze-python -m pip list        what is installed
-#   maze-python script.py          run something inside it
+#   maze-python script.py                 run something inside it
+#   pip --python /opt/maze/venv/bin/python3 list
+#                                         what is visible in it (the venv has
+#                                         no private pip; system pip drives it)
 exec /opt/maze/venv/bin/python3 "$@"

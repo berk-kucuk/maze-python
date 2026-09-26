@@ -1,36 +1,55 @@
+# PIP-ONLY LIBRARIES ARE PINNED to exact versions (the ones maze-python
+# 1.1.0-1 shipped). Unpinned, every package build pulled whatever PyPI served
+# that minute, unverified, straight into a runtime six apps execute — and two of
+# these (galeodes, social-analyzer) are small single-maintainer projects, the
+# classic target of a hijacked-release attack. Bump a pin deliberately, after
+# reading the upstream changelog, and rebuild.
 # maze-python — the ONE Python environment every Maze desktop app runs in
 # (/opt/maze/venv). This is the union of what the apps need; the app that
 # needs each line is named so a dependency can be dropped when its app goes.
 #
-# Resolved together on 2026-09-16: 78 distributions, no conflicts.
+# HOW THIS FILE IS USED. The venv is created with --system-site-packages, so
+# a library is taken from the Arch repository whenever one exists (it is then a
+# pacman `depends=` entry in PKGBUILD and the user's machine fetches it from an
+# Arch mirror — fast, deduplicated with the rest of the system, and never
+# uploaded to the Maze repo). ONLY the lines in the "pip-only" block at the
+# bottom are installed into the venv itself, with --no-deps, because they have
+# no Arch package; their dependencies are Arch packages too and are listed in
+# PKGBUILD. Keep the two files in sync: a new library goes to depends= if
+# `pacman -Si python-<name>` finds it, to the pip-only block otherwise.
+#
+# Resolved together on 2026-09-22.
 
 # ── Qt (maze-guard, maze-cloak, haze, hazedrop, qlam, sentinai) ─────────────
-PyQt6>=6.6.0
-qasync>=0.27.0            # maze-guard, hazedrop
-qtawesome                 # qlam
+# PyQt6>=6.6.0            -> python-pyqt6  (pip's wheel bundles a second, 250 MB Qt6)
+# qasync>=0.27.0          -> python-qasync        # maze-guard, hazedrop
+# qtawesome               -> python-qtawesome     # qlam
 
 # ── network / crypto (maze-guard, haze, hazedrop) ────────────────────────────
-scapy>=2.5.0              # maze-guard
-httpx>=0.27.0             # maze-guard
-cryptography>=42.0.0      # maze-guard, haze, hazedrop
-stem>=1.8.2               # haze, hazedrop
-python-socks[asyncio]>=2.4.4   # haze, hazedrop
-aiohttp>=3.9              # haze, hazedrop
-argon2-cffi>=23           # hazedrop
+# scapy>=2.5.0            -> scapy                # maze-guard
+# httpx>=0.27.0           -> python-httpx         # maze-guard
+# cryptography>=42.0.0    -> python-cryptography  # maze-guard, haze, hazedrop
+# stem>=1.8.2             -> python-stem          # haze, hazedrop
+# python-socks[asyncio]   -> python-python-socks  # haze, hazedrop
+# aiohttp>=3.9            -> python-aiohttp       # haze, hazedrop
+# argon2-cffi>=23         -> python-argon2-cffi   # hazedrop
 
 # ── media / misc (haze, hazedrop, qlam) ──────────────────────────────────────
-qrcode[pil]>=7.4          # haze, hazedrop
-sounddevice>=0.4.6        # haze (voice notes; needs the portaudio library)
-numpy>=1.26               # haze
-click>=8.1                # hazedrop
-rich>=13                  # hazedrop
-pyclamd                   # qlam
-watchdog                  # qlam
+# qrcode[pil]>=7.4        -> python-qrcode python-pillow   # haze, hazedrop
+# numpy>=1.26             -> python-numpy         # haze
+# click>=8.1              -> python-click         # hazedrop
+# rich>=13                -> python-rich          # hazedrop
+# watchdog                -> python-watchdog      # qlam
 
 # ── sentinai ─────────────────────────────────────────────────────────────────
-google-genai
-python-dotenv
-beautifulsoup4
-googlesearch-python
-selenium
-social-analyzer
+# python-dotenv           -> python-dotenv
+# beautifulsoup4          -> python-beautifulsoup4
+
+# ── pip-only (no Arch package; installed into the venv with --no-deps) ──────
+sounddevice==0.5.6        # haze (voice notes; needs portaudio + python-cffi)
+pyclamd==0.4.0                   # qlam
+google-genai==2.24.0              # sentinai (deps: anyio google-auth httpx pydantic requests tenacity websockets typing_extensions distro sniffio)
+googlesearch-python==1.3.0       # sentinai (deps: beautifulsoup4 requests)
+selenium==4.49.0                  # sentinai (deps: certifi trio trio-websocket typing_extensions urllib3 pysocks websocket-client)
+social-analyzer==0.45           # sentinai (deps: beautifulsoup4 galeodes langdetect lxml requests termcolor tld)
+galeodes==0.7                  # social-analyzer's own helper, PyPI only
