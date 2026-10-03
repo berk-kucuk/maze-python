@@ -66,3 +66,9 @@ git clone https://github.com/berk-kucuk/maze-python.git
 cd maze-python
 makepkg -si
 ```
+
+## License
+
+Copyright © 2026 Berk Küçük
+
+Released under the GNU General Public License v3.0 — see [LICENSE](LICENSE).
